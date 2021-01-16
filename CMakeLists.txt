@@ -19,11 +19,9 @@ find_package(pybind11 CONFIG)
 # Without this, any build libraries automatically have names "lib{x}.so"
 set(CMAKE_SHARED_MODULE_PREFIX "")
 
-set(CPPLIB_SOURCE_FILES src/Image.cpp
-                        src/ImageViewer.cpp)
+set(CPPLIB_SOURCE_FILES src/Image.cpp)
 set(CPPLIB_HEADER_FILES src/Image.hpp
-                        src/Kernel.hpp
-                        src/ImageViewer.hpp)
+                        src/Kernel.hpp)
 
 # Add the support library, this will be linked privately to all stuff exposed to python
 add_library(${CPPLIB_NAME} STATIC ${CPPLIB_SOURCE_FILES} ${CPPLIB_HEADER_FILES})
