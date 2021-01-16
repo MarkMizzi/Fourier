@@ -15,8 +15,6 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 # Find python and pybind11 - both are required dependencies
 find_package(Python2 COMPONENTS Interpreter Development)
 find_package(pybind11 CONFIG)
-find_package(OpenGL REQUIRED)
-find_package(GLUT REQUIRED)
 
 # Without this, any build libraries automatically have names "lib{x}.so"
 set(CMAKE_SHARED_MODULE_PREFIX "")
@@ -32,7 +30,6 @@ add_library(${CPPLIB_NAME} STATIC ${CPPLIB_SOURCE_FILES} ${CPPLIB_HEADER_FILES})
 
 # link libraries to C++ library
 target_link_libraries(${CPPLIB_NAME} jpeg png)
-target_link_libraries(${CPPLIB_NAME} ${OPENGL_LIBRARIES} ${GLUT_LIBRARY})
 
 # set up python module, link it to C++ library, and to Python and pybind11 libraries
 pybind11_add_module(fourier src/fourier_PyModule.cpp)

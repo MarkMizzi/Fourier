@@ -165,8 +165,6 @@ class Image {
         ssize_t height() const { return h; }
         ColorSpace colorSpace() const { return c_space; }
 
-        void set_showing(bool _showing) { showing = _showing; }
-
         // Converts images to RGB.
         //  * RGB images untouched
         //  * RGBX and RGBA images have their alpha channels thrown away; fast

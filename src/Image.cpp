@@ -500,31 +500,6 @@ Image::canny_edge_detect(float blur_std_dev,
                last_pixel = ((8 * INTERVAL - t) * get(INTENSITY, i - 1, j) -
                              (7 * INTERVAL - t) * get(INTENSITY, i - 1, j - 1)) / INTERVAL;
            }
-            // if (t >= 0 && t < INTERVAL) {
-            //     next_pixel = get(INTENSITY, i + 1, j - 1);
-            //     last_pixel = get(INTENSITY, i - 1, j);
-            // } else if (t >= INTERVAL && t < 2 * INTERVAL) {
-            //     next_pixel = get(INTENSITY, i, j - 1);
-            //     last_pixel = get(INTENSITY, i - 1, j + 1);
-            // } else if (t >= 2 * INTERVAL && t < 3 * INTERVAL) {
-            //     next_pixel = get(INTENSITY, i - 1, j - 1);
-            //     last_pixel = get(INTENSITY, i, j + 1);
-            // } else if (t >= 3 * INTERVAL && t < 4 * INTERVAL) {
-            //     next_pixel = get(INTENSITY, i - 1, j);
-            //     last_pixel = get(INTENSITY, i + 1, j + 1);
-            // } else if (t >= 4 * INTERVAL && t < 5 * INTERVAL) {
-            //     next_pixel = get(INTENSITY, i - 1, j + 1);
-            //     last_pixel = get(INTENSITY, i + 1, j);
-            // } else if (t >= 5 * INTERVAL && t < 6 * INTERVAL) {
-            //     next_pixel = get(INTENSITY, i, j + 1);
-            //     last_pixel = get(INTENSITY, i + 1, j - 1);
-            // } else if (t >= 6 * INTERVAL && t < 7 * INTERVAL) {
-            //     next_pixel = get(INTENSITY, i + 1, j + 1);
-            //     last_pixel = get(INTENSITY, i, j - 1);
-            // } else if (t >= 7 * INTERVAL && t < 8 * INTERVAL) {
-            //     next_pixel = get(INTENSITY, i + 1, j);
-            //     last_pixel = get(INTENSITY, i - 1, j);
-            // }
 #undef INTERVAL
 
             if (get(INTENSITY, i, j) < last_pixel ||
