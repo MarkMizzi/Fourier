@@ -36,3 +36,9 @@ target_link_libraries(fourier PUBLIC ${PYTHON_LIBRARIES})
 target_include_directories(fourier PRIVATE ${PYTHON_INCLUDE_DIRS} ${pybind11_INCLUDE_DIRS})
 
 configure_file(src/__init__.py __init__.py COPYONLY)
+
+set(INSTALL_DIR "/usr/lib/python2.7/fourier")
+install(TARGETS fourier
+        DESTINATION ${INSTALL_DIR})
+install(FILES src/__init__.py
+        DESTINATION ${INSTALL_DIR})
