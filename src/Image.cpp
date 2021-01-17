@@ -386,9 +386,9 @@ Image::canny_edge_detect(float blur_std_dev,
 
     gaussian_blur(blur_std_dev, blur_size_f);
 
-#define SOBEL_X {{-1.0f, 0.0f, 1.0f}, \
-                 {-2.0f, 0.0f, 2.0f}, \
-                 {-1.0f, 0.0f, 1.0f}}
+#define SOBEL_X {{1.0f, 0.0f, -1.0f}, \
+                 {2.0f, 0.0f, -2.0f}, \
+                 {1.0f, 0.0f, -1.0f}}
 #define SOBEL_Y {{1.0f, 2.0f, 1.0f}, \
                  {0.0f, 0.0f, 0.0f}, \
                  {-1.0f, -2.0f, -1.0f}}
@@ -436,10 +436,10 @@ Image::canny_edge_detect(float blur_std_dev,
     Image tmp_copy(*this);
 
     // find an approximation of gradient direction
-    Image Theta(atan2(pow(*this * x_edge_k, 2),
-                      pow(tmp_copy * y_edge_k, 2)));
+    Image Theta(atan2(pow(tmp_copy * y_edge_k, 2),
+                      pow(*this * x_edge_k, 2)));
     // find an approximation of image gradient.
-    (void) sqrt((*this = *this + tmp_copy));
+    *this = sqrt((*this = *this + tmp_copy)) * (1.0f / sqrt(2.0f));
 
     // non-maximum suppression:
     //    Pixels which are on an edge are analyzed as follows.
@@ -459,47 +459,74 @@ Image::canny_edge_detect(float blur_std_dev,
             //  Similarly, we can find the value of an imaginary pixel in the direction opposite the that of the gradient.
             //  This is how values for next_pixel and last_pixel are found.
 #define INTERVAL (M_PI / 4)
+           // if (t >= 0 && t < INTERVAL) {
+           //     next_pixel = ((INTERVAL - t) * get(INTENSITY, i + 1, j - 1) -
+           //                   t * get(INTENSITY, i + 1, j)) / INTERVAL;
+           //     last_pixel = ((INTERVAL - t) * get(INTENSITY, i - 1, j + 1) -
+           //                   t * get(INTENSITY, i - 1, j)) / INTERVAL;
+           // } else if (t >= INTERVAL && t < 2 * INTERVAL) {
+           //     next_pixel = ((2 * INTERVAL - t) * get(INTENSITY, i, j - 1) -
+           //                   (INTERVAL - t) * get(INTENSITY, i + 1, j - 1)) / INTERVAL;
+           //     last_pixel = ((2 * INTERVAL - t) * get(INTENSITY, i, j + 1) -
+           //                   (INTERVAL - t) * get(INTENSITY, i - 1, j + 1)) / INTERVAL;
+           // } else if (t >= 2 * INTERVAL && t < 3 * INTERVAL) {
+           //     next_pixel = ((3 * INTERVAL - t) * get(INTENSITY, i - 1, j - 1) -
+           //                   (2 * INTERVAL - t) * get(INTENSITY, i, j - 1)) / INTERVAL;
+           //     last_pixel = ((3 * INTERVAL - t) * get(INTENSITY, i + 1, j + 1) -
+           //                   (2 * INTERVAL - t) * get(INTENSITY, i, j + 1)) / INTERVAL;
+           // } else if (t >= 3 * INTERVAL && t < 4 * INTERVAL) {
+           //     next_pixel = ((4 * INTERVAL - t) * get(INTENSITY, i - 1, j) -
+           //                   (3 * INTERVAL - t) * get(INTENSITY, i - 1, j - 1)) / INTERVAL;
+           //     last_pixel = ((4 * INTERVAL - t) * get(INTENSITY, i + 1, j) -
+           //                   (3 * INTERVAL - t) * get(INTENSITY, i + 1, j + 1)) / INTERVAL;
+           // } else if (t >= 4 * INTERVAL && t < 5 * INTERVAL) {
+           //     next_pixel = ((5 * INTERVAL - t) * get(INTENSITY, i - 1, j + 1) -
+           //                   (4 * INTERVAL - t) * get(INTENSITY, i - 1, j)) / INTERVAL;
+           //     last_pixel = ((5 * INTERVAL - t) * get(INTENSITY, i + 1, j - 1) -
+           //                   (4 * INTERVAL - t) * get(INTENSITY, i + 1, j)) / INTERVAL;
+           // } else if (t >= 5 * INTERVAL && t < 6 * INTERVAL) {
+           //     next_pixel = ((6 * INTERVAL - t) * get(INTENSITY, i, j + 1) -
+           //                   (5 * INTERVAL - t) * get(INTENSITY, i - 1, j + 1)) / INTERVAL;
+           //     last_pixel = ((6 * INTERVAL - t) * get(INTENSITY, i, j - 1) -
+           //                   (5 * INTERVAL - t) * get(INTENSITY, i + 1, j - 1)) / INTERVAL;
+           // } else if (t >= 6 * INTERVAL && t < 7 * INTERVAL) {
+           //     next_pixel = ((7 * INTERVAL - t) * get(INTENSITY, i + 1, j + 1) -
+           //                   (6 * INTERVAL - t) * get(INTENSITY, i, j + 1)) / INTERVAL;
+           //     last_pixel = ((7 * INTERVAL - t) * get(INTENSITY, i - 1, j - 1) -
+           //                   (6 * INTERVAL - t) * get(INTENSITY, i, j - 1)) / INTERVAL;
+           // } else if (t >= 7 * INTERVAL && t < 8 * INTERVAL) {
+           //     next_pixel = ((8 * INTERVAL - t) * get(INTENSITY, i + 1, j) -
+           //                   (7 * INTERVAL - t) * get(INTENSITY, i + 1, j + 1)) / INTERVAL;
+           //     last_pixel = ((8 * INTERVAL - t) * get(INTENSITY, i - 1, j) -
+           //                   (7 * INTERVAL - t) * get(INTENSITY, i - 1, j - 1)) / INTERVAL;
+           // }
+
            if (t >= 0 && t < INTERVAL) {
-               next_pixel = ((INTERVAL - t) * get(INTENSITY, i + 1, j - 1) -
-                             t * get(INTENSITY, i + 1, j)) / INTERVAL;
-               last_pixel = ((INTERVAL - t) * get(INTENSITY, i - 1, j + 1) -
-                             t * get(INTENSITY, i - 1, j)) / INTERVAL;
+               next_pixel = get(INTENSITY, i + 1, j);
+               last_pixel = get(INTENSITY, i - 1, j);
            } else if (t >= INTERVAL && t < 2 * INTERVAL) {
-               next_pixel = ((2 * INTERVAL - t) * get(INTENSITY, i, j - 1) -
-                             (INTERVAL - t) * get(INTENSITY, i + 1, j - 1)) / INTERVAL;
-               last_pixel = ((2 * INTERVAL - t) * get(INTENSITY, i, j + 1) -
-                             (INTERVAL - t) * get(INTENSITY, i - 1, j + 1)) / INTERVAL;
+               next_pixel = get(INTENSITY, i + 1, j - 1);
+               last_pixel = get(INTENSITY, i - 1, j + 1);
            } else if (t >= 2 * INTERVAL && t < 3 * INTERVAL) {
-               next_pixel = ((3 * INTERVAL - t) * get(INTENSITY, i - 1, j - 1) -
-                             (2 * INTERVAL - t) * get(INTENSITY, i, j - 1)) / INTERVAL;
-               last_pixel = ((3 * INTERVAL - t) * get(INTENSITY, i + 1, j + 1) -
-                             (2 * INTERVAL - t) * get(INTENSITY, i, j + 1)) / INTERVAL;
+               next_pixel = get(INTENSITY, i, j - 1);
+               last_pixel = get(INTENSITY, i, j + 1);
            } else if (t >= 3 * INTERVAL && t < 4 * INTERVAL) {
-               next_pixel = ((4 * INTERVAL - t) * get(INTENSITY, i - 1, j) -
-                             (3 * INTERVAL - t) * get(INTENSITY, i - 1, j - 1)) / INTERVAL;
-               last_pixel = ((4 * INTERVAL - t) * get(INTENSITY, i + 1, j) -
-                             (3 * INTERVAL - t) * get(INTENSITY, i + 1, j + 1)) / INTERVAL;
+               next_pixel = get(INTENSITY, i - 1, j - 1);
+               last_pixel = get(INTENSITY, i + 1, j + 1);
            } else if (t >= 4 * INTERVAL && t < 5 * INTERVAL) {
-               next_pixel = ((5 * INTERVAL - t) * get(INTENSITY, i - 1, j + 1) -
-                             (4 * INTERVAL - t) * get(INTENSITY, i - 1, j)) / INTERVAL;
-               last_pixel = ((5 * INTERVAL - t) * get(INTENSITY, i + 1, j - 1) -
-                             (4 * INTERVAL - t) * get(INTENSITY, i + 1, j)) / INTERVAL;
+               next_pixel = get(INTENSITY, i - 1, j);
+               last_pixel = get(INTENSITY, i + 1, j);
            } else if (t >= 5 * INTERVAL && t < 6 * INTERVAL) {
-               next_pixel = ((6 * INTERVAL - t) * get(INTENSITY, i, j + 1) -
-                             (5 * INTERVAL - t) * get(INTENSITY, i - 1, j + 1)) / INTERVAL;
-               last_pixel = ((6 * INTERVAL - t) * get(INTENSITY, i, j - 1) -
-                             (5 * INTERVAL - t) * get(INTENSITY, i + 1, j - 1)) / INTERVAL;
+               next_pixel = get(INTENSITY, i - 1, j + 1);
+               last_pixel = get(INTENSITY, i + 1, j - 1);
            } else if (t >= 6 * INTERVAL && t < 7 * INTERVAL) {
-               next_pixel = ((7 * INTERVAL - t) * get(INTENSITY, i + 1, j + 1) -
-                             (6 * INTERVAL - t) * get(INTENSITY, i, j + 1)) / INTERVAL;
-               last_pixel = ((7 * INTERVAL - t) * get(INTENSITY, i - 1, j - 1) -
-                             (6 * INTERVAL - t) * get(INTENSITY, i, j - 1)) / INTERVAL;
+               next_pixel = get(INTENSITY, i, j + 1);
+               last_pixel = get(INTENSITY, i, j - 1);
            } else if (t >= 7 * INTERVAL && t < 8 * INTERVAL) {
-               next_pixel = ((8 * INTERVAL - t) * get(INTENSITY, i + 1, j) -
-                             (7 * INTERVAL - t) * get(INTENSITY, i + 1, j + 1)) / INTERVAL;
-               last_pixel = ((8 * INTERVAL - t) * get(INTENSITY, i - 1, j) -
-                             (7 * INTERVAL - t) * get(INTENSITY, i - 1, j - 1)) / INTERVAL;
+               next_pixel = get(INTENSITY, i + 1, j + 1);
+               last_pixel = get(INTENSITY, i - 1, j - 1);
            }
+
 #undef INTERVAL
 
             if (get(INTENSITY, i, j) < last_pixel ||
@@ -523,6 +550,45 @@ Image::canny_edge_detect(float blur_std_dev,
 
     return *this;
 }
+
+// IMPLEMENT frei chen edge detection
+
+// #define FREI_CHEN_1 {{1.0f / (2.0f * sqrt(2.0f)), 0.5f, 1.0f / (2.0f * sqrt(2.0f))}, \
+//                      {0.0f, 0.0f, 0.0f},                                             \
+//                      {-1.0f / (2.0f * sqrt(2.0f)), -0.5f, -1.0f / (2.0f * sqrt(2.0f))}}
+
+
+// #define FREI_CHEN_2 {{1.0f / (2.0f * sqrt(2.0f)), 0.0f, -1.0f / (2.0f * sqrt(2.0f))}, \
+//                      {0.5f, 0.0f, -0.5f},                                             \
+//                      {1.0f / (2.0f * sqrt(2.0f)), 0.0f, -1.0f / (2.0f * sqrt(2.0f))}}
+
+// #define FREI_CHEN_3 {{0.0f, -1.0f / (2.0f * sqrt(2.0f)), 0.5f},                       \
+//                      {1.0f / (2.0f * sqrt(2.0f)), 0.0f, -1.0f / (2.0f * sqrt(2.0f))}, \
+//                      {-0.5f, 1.0f / (2.0f * sqrt(2.0f)), 0.0f}}
+
+// #define FREI_CHEN_4 {{0.5f, -1.0f / (2.0f * sqrt(2.0f)), 0.0f},                       \
+//                      {-1.0f / (2.0f * sqrt(2.0f)), 0.0f, 1.0f / (2.0f * sqrt(2.0f))}, \
+//                      {0.0f, 1.0f / (2.0f * sqrt(2.0f)), -0.5f}}
+
+// #define FREI_CHEN_5 {{0.0f, 1.0f / 2.0f, 0.0f},            \
+//                      {-1.0f / 2.0f, 0.0f, -1.0f / 2.0f},   \
+//                      {0.0f, 1.0f / 2.0f, 0.0f}}
+
+// #define FREI_CHEN_6 {{-0.5f, 0.0f, 0.5f},    \
+//                      {0.0f, 0.0f, 0.0f},                   \
+//                      {0.5f, 0.0f, -0.5f}}
+
+// #define FREI_CHEN_7 {{1.0f / 6.0f, -1.0f / 3.0f, 1.0f / 6.0f},    \
+//                      {-1.0f / 3.0f, 2.0f / 3.0f, -1.0f / 3.0f},   \
+//                      {1.0f / 6.0f, -1.0f / 3.0f, 1.0f / 6.0f}}
+
+// #define FREI_CHEN_8 {{-1.0f / 3.0f, 1.0f / 6.0f, -1.0f / 3.0f},   \
+//                      {1.0f / 6.0f, 2.0f / 3.0f, 1.0f / 6.0f},     \
+//                      {-1.0f / 3.0f, 1.0f / 6.0f, -1.0f / 3.0f}}
+
+// #define FREI_CHEN_9 {{1.0f / 3.0f, 1.0f / 3.0f, 1.0f / 3.0f},     \
+//                      {1.0f / 3.0f, 1.0f / 3.0f, 1.0f / 3.0f},     \
+//                      {1/0f / 3.0f, 1.0f / 3.0f, 1.0f / 3.0f}}
 
 Image
 Image::readJPEG(const char *fname)
@@ -914,6 +980,34 @@ operator*(const Image& im1,
         for (ssize_t i = 0; i < im1.width(); i++)
             for (ssize_t j = 0; j < im1.height(); j++)
                 n_im(it->first, i, j) *= im2.get(it->first, i, j);
+
+    return n_im;
+}
+
+Image
+operator+(const Image& im,
+          float x)
+{
+    Image n_im(im);
+
+    for (auto it = im.image_data.begin(); it != im.image_data.end(); ++it)
+        for (ssize_t i = 0; i < im.width(); i++)
+            for (ssize_t j = 0; j < im.height(); j++)
+                n_im(it->first, i, j) += x;
+
+    return n_im;
+}
+
+Image
+operator*(const Image& im,
+          float x)
+{
+    Image n_im(im);
+
+    for (auto it = im.image_data.begin(); it != im.image_data.end(); ++it)
+        for (ssize_t i = 0; i < im.width(); i++)
+            for (ssize_t j = 0; j < im.height(); j++)
+                n_im(it->first, i, j) *= x;
 
     return n_im;
 }

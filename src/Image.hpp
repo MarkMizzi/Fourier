@@ -186,8 +186,8 @@ class Image {
                              ssize_t kern_size_f);
         Image& canny_edge_detect(float blur_std_dev=1.4f,
                                  ssize_t blur_size_f=2,
-                                 float upper_threshold=76.8,
-                                 float lower_threshold=25.6);
+                                 float upper_threshold=76.8f,
+                                 float lower_threshold=25.6f);
 
         // writes the given JPEG to file with name fname.
         void writeJPEG(const char *fname, const int quality) const;
@@ -211,6 +211,10 @@ class Image {
                                const Image& im2);
         friend Image operator*(const Image& im1,
                                const Image& im2);
+        friend Image operator+(const Image& im,
+                               float x);
+        friend Image operator*(const Image& im,
+                               float x);
         friend Image& pow(Image& im,
                           unsigned p);
         friend Image& sqrt(Image& im);
@@ -245,6 +249,14 @@ operator+(const Image& im1,
 Image
 operator*(const Image& im1,
           const Image& im2);
+
+Image
+operator+(const Image& im,
+          float x);
+
+Image
+operator*(const Image& im,
+          float x);
 
 Image&
 pow(Image& im,
