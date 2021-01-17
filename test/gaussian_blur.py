@@ -11,7 +11,7 @@ import time
 x = fourier.readJPEG("./corvette.jpeg")
 
 s = 6.0
-s_f = 4;
+s_f = 4
 
 # apply gaussian blur having standard deviation std_dev and size 2 * size_f + 1
 t0 = time.time()
