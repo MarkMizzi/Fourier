@@ -74,6 +74,8 @@ class Image {
     ColorSpace c_space;
     ssize_t w, h;
 
+    Image(){}
+
     // It is the responsibility of factory methods to call this method with the proper parameters,
     //     for example, no checks are made to see if image having ColorSpace RGB has only a RED, GREEN and BLUE channel.
     Image(const std::map<ChannelType,
@@ -92,8 +94,8 @@ class Image {
                       ssize_t j) { return image_data[ch][w * j + i]; }
 
     float get(ChannelType ch,
-                  ssize_t i,
-                  ssize_t j) const { return image_data.at(ch)[w * j + i]; }
+              ssize_t i,
+              ssize_t j) const { return image_data.at(ch)[w * j + i]; }
 
     // return a copy of the indicated row. Avoid in the API as it is somewhat expensive.
     // avoids returning a reference due to possibility of changing a single row's width.
@@ -159,8 +161,6 @@ class Image {
                 }
             }
 
-        Image(){}
-
         ssize_t width() const { return w; }
         ssize_t height() const { return h; }
         ColorSpace colorSpace() const { return c_space; }
@@ -216,7 +216,7 @@ class Image {
         friend Image operator*(const Image& im,
                                float x);
         friend Image& pow(Image& im,
-                          unsigned p);
+                          float p);
         friend Image& sqrt(Image& im);
         friend Image atan2(const Image& im1,
                            const Image& im2);
@@ -260,7 +260,7 @@ operator*(const Image& im,
 
 Image&
 pow(Image& im,
-    unsigned p);
+    float p);
 
 Image&
 sqrt(Image& im);

@@ -31,10 +31,12 @@ b_s = 3.0
 b_s_f = 3
 u_t = 70.0
 l_t = 25.0
+t0 = time.time()
 x.canny_edge_detect(blur_std_dev=b_s,
                     blur_size_f=b_s_f,
                     upper_threshold=u_t,
                     lower_threshold=l_t)
+t1 = time.time()
 print("Canny edge detection on " + str(x) +
       " having blur_std_dev = " + str(b_s) +
       ", blur_size_f = " + str(b_s_f) +
@@ -43,3 +45,24 @@ print("Canny edge detection on " + str(x) +
        " took " + str(t1 - t0))
 
 x.writeJPEG("./corvette_edges.jpeg")
+
+x = fourier.readJPEG("./jag.jpeg")
+
+b_s = 1.4
+b_s_f = 2
+u_t = 76.8
+l_t = 30.6
+t0 = time.time()
+x.canny_edge_detect(blur_std_dev=b_s,
+                    blur_size_f=b_s_f,
+                    upper_threshold=u_t,
+                    lower_threshold=l_t)
+t1 = time.time()
+print("Canny edge detection on " + str(x) +
+      " having blur_std_dev = " + str(b_s) +
+      ", blur_size_f = " + str(b_s_f) +
+      ", upper_threshold = " + str(u_t) +
+      " and lower_threshold = " + str(l_t) +
+       " took " + str(t1 - t0))
+
+x.writeJPEG("./jag_edges.jpeg")

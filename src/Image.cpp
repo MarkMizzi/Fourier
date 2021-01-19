@@ -1014,7 +1014,7 @@ operator*(const Image& im,
 
 Image&
 pow(Image& im,
-    unsigned p) {
+    float p) {
     for (auto it = im.image_data.begin(); it != im.image_data.end(); ++it)
         for (ssize_t i = 0; i < im.width(); i++)
             for (ssize_t j = 0; j < im.height(); j++)

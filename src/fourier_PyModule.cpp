@@ -23,8 +23,23 @@ PYBIND11_MODULE(fourier, m) {
         .def("to_YCbCr", &Image::to_YCbCr)
         .def("to_gray", &Image::to_gray)
         .def("__mul__", [](Image& im, std::vector<std::vector<float>> k){
-                return im * k;
+             return im * k;
         }, py::is_operator())
+        .def("__mul__", [](const Image& im1, const Image& im2){
+             return im1 * im2;
+        }, py::is_operator())
+        .def("__add__", [](const Image& im1, const Image& im2){
+             return im1 + im2;
+        }, py::is_operator())
+        .def("__mul__", [](const Image& im, float x){
+             return im * x;
+        }, py::is_operator())
+        .def("__add__", [](const Image& im, float x){
+             return im + x;
+        }, py::is_operator())
+        .def("__pow__", [](Image& im, float p){
+             return pow(im, p);
+        })
         .def("gaussian_blur_naive", &Image::gaussian_blur_naive,
              py::arg("std_dev"),
              py::arg("size_f"))
