@@ -275,7 +275,7 @@ Image::to_gray()
 inline
 void
 Image::convolve_component(ChannelType ch,
-                          const std::vector<std::vector<float>>& kern)
+                          const Kernel& kern)
 {
     std::vector<float> convolved_comp(width() * height(), 0);
 
@@ -302,7 +302,7 @@ Image::convolve_component(ChannelType ch,
 
 
 Image&
-Image::operator*(const std::vector<std::vector<float>>& kern)
+Image::operator*(const Kernel& kern)
 {
     // check that the kernel's rows are all the same size, and that its height and width is odd.
     if (kern.size() % 2 == 0)
@@ -376,6 +376,20 @@ Image::gaussian_blur(float std_dev,
     return (*this) * r * c;
 }
 
+#undef BLUR_ACC
+
+Image&
+Image::box_blur(ssize_t kern_size_f)
+{
+    Kernel row_k(1,
+                 KernelRow(2 * kern_size_f + 1,
+                           1.0f / (2 * kern_size_f + 1)));
+    Kernel column_k(2 * kern_size_f + 1,
+                    KernelRow(1,
+                              1.0f / (2 * kern_size_f + 1)));
+    return (*this) * row_k * column_k;
+}
+
 Image&
 Image::canny_edge_detect(float blur_std_dev,
                          ssize_t blur_size_f,
@@ -418,8 +432,8 @@ Image::canny_edge_detect(float blur_std_dev,
                        {4.0f / 20, 10.0f / 20, 20.0f / 20, 10.0f / 20, 4.0f / 20},      \
                        {5.0f / 20, 8.0f / 20, 10.0f / 20, 8.0f / 20, 5.0f / 20}}
 
-    std::vector<std::vector<float>> x_edge_k SOBEL_X;
-    std::vector<std::vector<float>> y_edge_k SOBEL_Y;
+    Kernel x_edge_k SOBEL_X;
+    Kernel y_edge_k SOBEL_Y;
 
 #undef SOBEL_X
 #undef SOBEL_Y

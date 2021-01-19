@@ -64,6 +64,9 @@ str(ColorSpace c_space) {
     }
 }
 
+typedef std::vector<std::vector<float>> Kernel;
+typedef std::vector<float> KernelRow;
+
 class Image {
     // The data for one channel is held in a vector of floats,
     //       organized in such a way that the pixel (i, j) is in the position w * j + i
@@ -104,7 +107,7 @@ class Image {
 
     // convolves a single component, purely used to reduce size of operator* definition.
     inline void convolve_component(ChannelType ch,
-                                   const std::vector<std::vector<float>>& kern);
+                                   const Kernel& kern);
 
     public:
         // copy constructor
@@ -178,12 +181,13 @@ class Image {
         void to_gray();
 
         // convolve image
-        Image& operator*(const std::vector<std::vector<float>>& kern);
+        Image& operator*(const Kernel& kern);
 
         Image& gaussian_blur_naive(float std_dev,
                                    ssize_t kern_size_f);
         Image& gaussian_blur(float std_dev,
                              ssize_t kern_size_f);
+        Image& box_blur(ssize_t kern_size_f);
         Image& canny_edge_detect(float blur_std_dev=1.4f,
                                  ssize_t blur_size_f=2,
                                  float upper_threshold=76.8f,

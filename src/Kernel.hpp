@@ -5,12 +5,15 @@
 #include <cstdlib>
 #include <cmath>
 
-class GaussianKernel : public std::vector<std::vector<float>> {
+typedef std::vector<std::vector<float>> Kernel;
+typedef std::vector<float> KernelRow;
+
+class GaussianKernel : public Kernel {
     public:
         GaussianKernel(float std_dev, ssize_t kern_size_f) :
-            std::vector<std::vector<float>>(2 * kern_size_f + 1,
-                                            std::vector<float>(2 * kern_size_f + 1,
-                                                               0)) {
+            Kernel(2 * kern_size_f + 1,
+                   KernelRow(2 * kern_size_f + 1,
+                             0)) {
             float p = 2 * std_dev * std_dev;
             float q = 2 * M_PI * std_dev * std_dev;
             for (ssize_t i = 0; i < 2 * kern_size_f + 1; i++)
@@ -34,9 +37,9 @@ class GaussianKernel : public std::vector<std::vector<float>> {
 class GaussianRow : public std::vector<std::vector<float>> {
     public:
         GaussianRow(float std_dev, ssize_t kern_size_f) :
-            std::vector<std::vector<float>>(1,
-                                            std::vector<float>(2 * kern_size_f + 1,
-                                                               0)) {
+            Kernel(1,
+                   KernelRow(2 * kern_size_f + 1,
+                             0)) {
             float p = 2 * std_dev * std_dev;
             float q = sqrt(2 * M_PI) * std_dev;
 
@@ -54,12 +57,12 @@ class GaussianRow : public std::vector<std::vector<float>> {
 
 };
 
-class GaussianColumn : public std::vector<std::vector<float>> {
+class GaussianColumn : public Kernel {
     public:
         GaussianColumn(float std_dev, ssize_t kern_size_f) :
-            std::vector<std::vector<float>>(2 * kern_size_f + 1,
-                                            std::vector<float>(1,
-                                                               0)) {
+            Kernel(2 * kern_size_f + 1,
+                   KernelRow(1,
+                             0)) {
             float p = 2 * std_dev * std_dev;
             float q = sqrt(2 * M_PI) * std_dev;
 
@@ -80,9 +83,9 @@ class GaussianXDerivativeKernel : public std::vector<std::vector<float>> {
     public:
         GaussianXDerivativeKernel(float std_dev,
                                   ssize_t kern_size_f) :
-            std::vector<std::vector<float>>(2 * kern_size_f + 1,
-                                            std::vector<float>(2 * kern_size_f + 1,
-                                                               0)) {
+            Kernel(2 * kern_size_f + 1,
+                   KernelRow(2 * kern_size_f + 1,
+                             0)) {
 
             float p = 2 * std_dev * std_dev;
 
@@ -102,9 +105,9 @@ class GaussianYDerivativeKernel : public std::vector<std::vector<float>> {
     public:
         GaussianYDerivativeKernel(float std_dev,
                                   ssize_t kern_size_f) :
-            std::vector<std::vector<float>>(2 * kern_size_f + 1,
-                                            std::vector<float>(2 * kern_size_f + 1,
-                                                               0)) {
+            Kernel(2 * kern_size_f + 1,
+                   KernelRow(2 * kern_size_f + 1,
+                             0)) {
 
             float p = 2 * std_dev * std_dev;
 

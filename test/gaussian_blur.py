@@ -24,6 +24,19 @@ print("Gaussian blur on " + str(x) +
 
 x.writeJPEG("./blurred_corvette.jpeg")
 
+x = fourier.readJPEG("./corvette.jpeg")
+s_f = 1
+
+# apply gaussian blur having standard deviation std_dev and size 2 * size_f + 1
+t0 = time.time()
+x.box_blur(size_f=s_f)
+t1 = time.time()
+print("Box blur on " + str(x) +
+      " having size " + str(2 * s_f + 1) +
+      " took " + str(t1 - t0))
+
+x.writeJPEG("./box_blurred_corvette.jpeg")
+
 # read a JPEG image from a file
 x = fourier.readJPEG("./eagle.jpeg")
 

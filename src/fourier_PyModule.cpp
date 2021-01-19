@@ -46,6 +46,8 @@ PYBIND11_MODULE(fourier, m) {
         .def("gaussian_blur", &Image::gaussian_blur,
              py::arg("std_dev"),
              py::arg("size_f"))
+        .def("box_blur", &Image::box_blur,
+             py::arg("size_f"))
         .def("canny_edge_detect", &Image::canny_edge_detect,
              py::arg("blur_std_dev") = 1.4f,
              py::arg("blur_size_f") = 2,
