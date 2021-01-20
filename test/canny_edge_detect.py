@@ -29,8 +29,8 @@ x = fourier.readJPEG("./corvette.jpeg")
 
 b_s = 3.0
 b_s_f = 3
-u_t = 70.0
-l_t = 25.0
+u_t = 50.0
+l_t = 18.0
 t0 = time.time()
 x.canny_edge_detect(blur_std_dev=b_s,
                     blur_size_f=b_s_f,

@@ -9,6 +9,8 @@
 #include <fstream>
 #include <array>
 #include <system_error>
+#include <unordered_set>
+#include <functional>
 #include "Kernel.hpp"
 
 const std::map<ChannelType, std::array<float, 4>> RGB_to_YCbCr {
@@ -561,6 +563,48 @@ Image::canny_edge_detect(float blur_std_dev,
             else
                 (*this)(INTENSITY, i, j) = 0;
         }
+
+    // connectivity analysis; improve eventually
+    std::unordered_set<ssize_t> visited_pts;
+
+    std::function<void(ssize_t, ssize_t)> traverse_edge = [&](ssize_t i, ssize_t j) {
+        visited_pts.insert(make_pair(i, j));
+
+#define EDGE_TRAVERSAL_CLAUSE(X, Y)                                    \
+        if (get(INTENSITY, (X), (Y)) == get_max_intensity() / 2) {     \
+            (*this)(INTENSITY, (X), (Y)) = get_max_intensity();        \
+            traverse_edge((X), (Y));                                   \
+        }
+
+        EDGE_TRAVERSAL_CLAUSE(i - 1, j - 1)
+        EDGE_TRAVERSAL_CLAUSE(i - 1, j)
+        EDGE_TRAVERSAL_CLAUSE(i - 1, j + 1)
+        EDGE_TRAVERSAL_CLAUSE(i, j - 1)
+        EDGE_TRAVERSAL_CLAUSE(i, j + 1)
+        EDGE_TRAVERSAL_CLAUSE(i + 1, j - 1)
+        EDGE_TRAVERSAL_CLAUSE(i + 1, j)
+        EDGE_TRAVERSAL_CLAUSE(i + 1, j + 1)
+#undef EDGE_TRAVERSAL_CLAUSE
+    };
+
+    for (ssize_t i = 0; i < width(); i++)
+        for (ssize_t j = 0; j < height(); j++) {
+            if (visited_pts.count(make_pair(i, j)))
+                continue;
+            else if (get(INTENSITY, i, j) != get_max_intensity()) {
+                visited_pts.insert(make_pair(i, j));
+            } else {
+                traverse_edge(i, j);
+            }
+        }
+
+    for (auto pair: visited_pts) {
+        ssize_t i = get_x_from_pair(pair);
+        ssize_t j = get_y_from_pair(pair);
+
+        if (get(INTENSITY, i, j) == get_max_intensity() / 2)
+            (*this)(INTENSITY, i, j) = 0;
+    }
 
     return *this;
 }

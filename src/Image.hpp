@@ -77,37 +77,49 @@ class Image {
     ColorSpace c_space;
     ssize_t w, h;
 
-    Image(){}
+    public:
+        // simple getters
+        ssize_t width() const { return w; }
+        ssize_t height() const { return h; }
+        ColorSpace colorSpace() const { return c_space; }
+    private:
+        // interface functions to convert a pair of numbers to a unqique value and vice versa.
+        // can also be used to index into the image data array easily.
+        ssize_t make_pair(ssize_t i, ssize_t j) const { return width() * j + i; }
+        ssize_t get_x_from_pair(ssize_t pair) const { return pair % width(); }
+        ssize_t get_y_from_pair(ssize_t pair) const { return pair / width(); }
 
-    // It is the responsibility of factory methods to call this method with the proper parameters,
-    //     for example, no checks are made to see if image having ColorSpace RGB has only a RED, GREEN and BLUE channel.
-    Image(const std::map<ChannelType,
-                         std::vector<float>>& _image_data,
-          const ColorSpace _c_space,
-          ssize_t _w,
-          ssize_t _h) :
-        image_data { _image_data },
-        c_space { _c_space },
-        w { _w },
-        h { _h } {}
+        Image(){}
+
+        // It is the responsibility of factory methods to call this method with the proper parameters,
+        //     for example, no checks are made to see if image having ColorSpace RGB has only a RED, GREEN and BLUE channel.
+        Image(const std::map<ChannelType,
+              std::vector<float>>& _image_data,
+              const ColorSpace _c_space,
+              ssize_t _w,
+              ssize_t _h) :
+            image_data { _image_data },
+            c_space { _c_space },
+            w { _w },
+            h { _h } {}
 
     // access a single pixel, such as the RED pixel at (100, 200) in an RGB image.
-    float& operator()(ChannelType ch,
-                      ssize_t i,
-                      ssize_t j) { return image_data[ch][w * j + i]; }
+        float& operator()(ChannelType ch,
+                          ssize_t i,
+                          ssize_t j) { return image_data[ch][make_pair(i, j)]; }
 
-    float get(ChannelType ch,
-              ssize_t i,
-              ssize_t j) const { return image_data.at(ch)[w * j + i]; }
+        float get(ChannelType ch,
+                  ssize_t i,
+                  ssize_t j) const { return image_data.at(ch)[make_pair(i, j)]; }
 
-    // return a copy of the indicated row. Avoid in the API as it is somewhat expensive.
-    // avoids returning a reference due to possibility of changing a single row's width.
-    inline std::vector<float> operator()(ChannelType ch,
-                                         ssize_t row) const;
+        // return a copy of the indicated row. Avoid calling inside the API functions as it is somewhat expensive.
+        // avoids returning a reference due to possibility of changing a single row's width.
+        inline std::vector<float> operator()(ChannelType ch,
+                                             ssize_t row) const;
 
-    // convolves a single component, purely used to reduce size of operator* definition.
-    inline void convolve_component(ChannelType ch,
-                                   const Kernel& kern);
+        // convolves a single component, purely used to reduce size of operator* definition.
+        inline void convolve_component(ChannelType ch,
+                                       const Kernel& kern);
 
     public:
         // copy constructor
@@ -163,10 +175,6 @@ class Image {
                         break;
                 }
             }
-
-        ssize_t width() const { return w; }
-        ssize_t height() const { return h; }
-        ColorSpace colorSpace() const { return c_space; }
 
         // Converts images to RGB.
         //  * RGB images untouched
@@ -235,8 +243,8 @@ Image::operator()(ChannelType ch,
 {
     if (image_data.count(ch) > 0) {
         std::vector<float> row;
-        for (ssize_t i = 0; i < w; i++)
-            row.push_back(image_data.at(ch)[w * row_i + i]);
+        for (ssize_t i = 0; i < width(); i++)
+            row.push_back(image_data.at(ch)[make_pair(i, row_i)]);
         return row;
     } else
         throw std::invalid_argument("Unsupported channel type.");
