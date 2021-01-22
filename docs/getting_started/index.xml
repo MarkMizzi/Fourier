@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Getting started on Fourier</title>
+    <link>https://markmizzi.github.io/fourier/getting_started/</link>
+    <description>Recent content in Getting started on Fourier</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Fri, 22 Jan 2021 20:01:51 +0100</lastBuildDate>
+    
+	<atom:link href="https://markmizzi.github.io/fourier/getting_started/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+  </channel>
+</rss>

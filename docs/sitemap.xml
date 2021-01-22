@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>https://markmizzi.github.io/fourier/algorithms/</loc>
+    <lastmod>2021-01-22T20:16:36+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://markmizzi.github.io/fourier/</loc>
+    <lastmod>2021-01-22T20:10:24+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://markmizzi.github.io/fourier/getting_started/</loc>
+    <lastmod>2021-01-22T20:01:51+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://markmizzi.github.io/fourier/categories/</loc>
+  </url>
+  
+  <url>
+    <loc>https://markmizzi.github.io/fourier/tags/</loc>
+  </url>
+  
+</urlset>
