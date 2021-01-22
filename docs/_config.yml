@@ -23,11 +23,10 @@ email: mizzimark87@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
   Fourier is a simple Python2 demo library which implements a number of image processing algorithms in C++.
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site, e.g. http://example.com
+url: "https://markmizzi.github.io/fourier/" # the base hostname & protocol for your site, e.g. http://example.com
 github_username: MarkMizzi
 
 # Build settings
-remote_theme: pmarsceill/just-the-docs
 plugins:
   - jekyll-feed
 
