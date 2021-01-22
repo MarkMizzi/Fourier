@@ -12,6 +12,6 @@ Here are some example images which illustrate what Fourier can do.
 
 ![Gaussian blur example](/examples/fourier_example1.jpeg)
 
-![Edge detect example](/examples/fourier_example2.jpg)
+![Edge detect example](/examples/fourier_example2_scaled.jpg)
 
-![Compound example](/examples/fourier_example3.jpeg)
+![Compound example](/examples/fourier_example3_new_scaled.jpeg)
