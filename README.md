@@ -6,7 +6,7 @@ Fourier is tested on an Ubuntu 20.04 system using Python v2.7. The library will 
 
 To build on Debian, you will need libjpeg, libpng, Make, CMake, g++, Python 2.7 and pybind11. The library can be compiled and installed by running the following commands
 
-{{< highlight sh >}}
+``` sh
 # install required dependencies
 apt install build-essential \
             cmake \
@@ -23,7 +23,7 @@ cmake -Bbuild
 # go to build directory and invoke make to compile the project.
 cd build 
 make
-{{< /highlight >}}
+```
 
 ## Usage
 
