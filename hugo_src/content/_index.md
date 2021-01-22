@@ -10,8 +10,8 @@ The performance of the library is not a priority, instead, the main aim of the l
 
 Here are some example images which illustrate what Fourier can do.
 
-![Gaussian blur example](/examples/fourier_example1.jpeg)
+[![Gaussian blur example](./examples/fourier_example1.jpeg)](./examples/fourier_example1.jpeg)
 
-![Edge detect example](/examples/fourier_example2_scaled.jpg)
+[![Edge detect example](./examples/fourier_example2.jpg)](./examples/fourier_example2.jpg)
 
-![Compound example](/examples/fourier_example3_new_scaled.jpeg)
+[![Compound example](./examples/fourier_example3.jpeg)](./examples/fourier_example3.jpeg)
