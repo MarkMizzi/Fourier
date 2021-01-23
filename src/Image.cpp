@@ -295,11 +295,7 @@ Image::convolve_component(ChannelType ch,
         }
     }
 
-    for (ssize_t i = kern_w_f; i < width() - kern_w_f; i++) {
-        for (ssize_t j = kern_h_f; j < height() - kern_h_f; j++) {
-            (*this)(ch, i, j) = convolved_comp[width() * j + i];
-        }
-    }
+    image_data[ch] = convolved_comp;
 }
 
 
