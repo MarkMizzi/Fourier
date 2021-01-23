@@ -189,7 +189,7 @@ class Image {
         void to_gray();
 
         // convolve image
-        Image& operator*(const Kernel& kern);
+        Image& convolve(const Kernel& kern);
 
         Image& gaussian_blur_naive(float std_dev,
                                    ssize_t kern_size_f);

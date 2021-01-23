@@ -25,9 +25,7 @@ PYBIND11_MODULE(fourier, m) {
         .def("to_RGB", &Image::to_RGB)
         .def("to_YCbCr", &Image::to_YCbCr)
         .def("to_gray", &Image::to_gray)
-        .def("__mul__", [](Image& im, std::vector<std::vector<float>> k){
-             return im * k;
-        }, py::is_operator())
+        .def("convolve", &Image::convolve)
         .def("__mul__", [](const Image& im1, const Image& im2){
              return im1 * im2;
         }, py::is_operator())

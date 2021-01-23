@@ -304,7 +304,7 @@ Image::convolve_component(ChannelType ch,
 
 
 Image&
-Image::operator*(const Kernel& kern)
+Image::convolve(const Kernel& kern)
 {
     // check that the kernel's rows are all the same size, and that its height and width is odd.
     if (kern.size() % 2 == 0)
@@ -360,7 +360,7 @@ Image::gaussian_blur_naive(float std_dev,
     if (kern_size_f < BLUR_ACC * std_dev)
         k.normalize();
 
-    return (*this) * k;
+    return this->convolve(k);
 }
 
 Image&
@@ -375,7 +375,7 @@ Image::gaussian_blur(float std_dev,
         c.normalize();
     }
 
-    return (*this) * r * c;
+    return this->convolve(r).convolve(c);
 }
 
 #undef BLUR_ACC
@@ -389,7 +389,7 @@ Image::box_blur(ssize_t kern_size_f)
     Kernel column_k(2 * kern_size_f + 1,
                     KernelRow(1,
                               1.0f / (2 * kern_size_f + 1)));
-    return (*this) * row_k * column_k;
+    return this->convolve(row_k).convolve(column_k);
 }
 
 Image&
@@ -452,8 +452,8 @@ Image::canny_edge_detect(float blur_std_dev,
     Image tmp_copy(*this);
 
     // find an approximation of gradient direction
-    Image Theta(atan2(pow(tmp_copy * y_edge_k, 2),
-                      pow(*this * x_edge_k, 2)));
+    Image Theta(atan2(pow(tmp_copy.convolve(y_edge_k), 2),
+                      pow(this->convolve(x_edge_k), 2)));
     // find an approximation of image gradient.
     *this = sqrt((*this = *this + tmp_copy)) * (1.0f / sqrt(2.0f));
 
