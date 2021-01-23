@@ -69,7 +69,41 @@ c_space = x.color_space()
 # supposing x is an Image.
 {{< /highlight >}}
 
-## Convolutions
+## Adding and multiplying Images
 
-Fourier allows an image to be convolved with an arbitrary convolution kernel, i.e. a matrix of odd width and height. 
+Fourier provides pixel-wise addition, multiplication, and exponentiation. Addition and multiplication can be performed on two images or on an image and a float, while exponentiation can only be performed on an image and a float. Any arithmetic operations produce a new Image object.
 
+An exception is thrown if one attempts to perform an arithmetic operation on images which do not have the same dimensions or color space.
+
+Addition and multiplication between images and floats are not commutative.
+
+{{< highlight python >}}
+# supposing x and y are two Image objects
+# z will be an image such that z(ch, i, j) = x(ch, i, j) + y(ch, i, j)
+z = x + y
+# z will be an image such that z(ch, i, j) = x(ch, i, j) + 2.0
+z = x + 2.0
+# z will be an image such that z(ch, i, j) = x(ch, i, j) * y(ch, i, j)
+z = x * y
+# z will be an image such that z(ch, i, j) = x(ch, i, j) * 3.0
+z = x * 3.0
+# z will be an image such that z(ch, i, j) is the square root of x(ch, i, j)
+z = x ** 0.5
+{{< /highlight >}}
+
+Fourier does not check if an arithmetic operation produces pixels of value greater than 255 or smaller than 0. If not dealt with by the library's user, this may cause issues when writing to a file, or graphical artifacts in the image file produced.
+
+## Printing Image information
+
+The magic method `__str__` is implemented for Image objects, and produces a string with the location of the C++ Image object in memory, as well as the dimensions and colour space of the image.
+
+{{< highlight python >}}
+# supposing x is an Image object
+print(x)
+# prints something like:
+#       Image @ 0x5638583989a0 { Width: 2880, Height: 2160, Color space: RGB}
+# to the console
+{{< /highlight >}}
+
+
+The library also provides another method called `dump` which returns a string containing all of an Image object's pixel data.

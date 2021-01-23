@@ -13,4 +13,9 @@
         var clipboard = new ClipboardJS('.clip');
     });
 </script>
+
+<!-- not part of hugo-geekdoc, added for KaTeX support, taken from https://latkin.org/blog/2016/08/07/better-tex-math-typesetting-in-hugo/ -->
+{{ if .GetParam "hasMath"}}
+  <script>renderMathInElement(document.body);</script>
+{{ end }}
 {{ end }}
