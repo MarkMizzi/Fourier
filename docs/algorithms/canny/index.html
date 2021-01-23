@@ -249,10 +249,10 @@
 <!--Several natural phenomena such as diffraction can blur edges, making -->
 <div class="gdoc-page__anchorwrap"><h2 id="the-canny-edge-detector">The Canny Edge Detector<a data-clipboard-text="https://markmizzi.github.io/fourier/algorithms/canny/#the-canny-edge-detector" class="gdoc-page__anchor gdoc-page__anchor--right clip" aria-label="Anchor The Canny Edge Detector" href="#the-canny-edge-detector"><svg class="icon link"><use xlink:href="#link"></use></svg></a></h2></div>
 <p>The Canny Edge Detector follows a 5 step process which will now be outlined. To help the discussion the following image will be passed through each step of the algorithm as implemented in Fourier.</p>
-<p><img src="./canny/fish.jpeg" alt="Alt: Lion fish (Image not loaded)"></p>
+<p><a href="./fish.jpeg"><img src="./fish.jpeg" alt="Alt: Lion fish (Image not loaded)"></a></p>
 <p>First, the image is converted to grayscale, and a gaussian blur is applied to it. The blurring is necessary because the next step uses differentiation operators, which are very sensitive to noise.</p>
 <p>The Gaussian blur removes a large amount of noise from the image, but also defocuses the edges. The blur parameters must hence be adjusted for optimal performance.</p>
-<p><img src="./canny/fish_gray.jpeg" alt="Alt: Gray lion fish (Image not loaded)"></p>
+<p><img src="./fish_gray.jpeg" alt="Alt: Gray lion fish (Image not loaded)"></p>
 <p>We are interested in places in the image 
 <span class="jsonly">
                   
@@ -390,7 +390,7 @@
 </noscript>
 </p>
 <p>These definitions give us an easy and quick way to find what we need.</p>
-<p><img src="./canny/fish_sobel.jpeg" alt="Alt: Lion fish sobel (Image not loaded)"></p>
+<p><img src="./fish_sobel.jpeg" alt="Alt: Lion fish sobel (Image not loaded)"></p>
 
 
     </article>

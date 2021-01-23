@@ -21,13 +21,13 @@ An edge is a curve in the image of roughly even intensity, such that in crossing
 
 The Canny Edge Detector follows a 5 step process which will now be outlined. To help the discussion the following image will be passed through each step of the algorithm as implemented in Fourier.
 
-![Alt: Lion fish (Image not loaded)](./canny/fish.jpeg)
+[![Alt: Lion fish (Image not loaded)](./fish.jpeg)](./fish.jpeg)
 
 First, the image is converted to grayscale, and a gaussian blur is applied to it. The blurring is necessary because the next step uses differentiation operators, which are very sensitive to noise.
 
 The Gaussian blur removes a large amount of noise from the image, but also defocuses the edges. The blur parameters must hence be adjusted for optimal performance.
 
-![Alt: Gray lion fish (Image not loaded)](./canny/fish_gray.jpeg)
+![Alt: Gray lion fish (Image not loaded)](./fish_gray.jpeg)
 
 We are interested in places in the image {{< tex "I" >}} where {{< tex "|\nabla I|" >}} is large, as this marks pixels where the intensity changes abruptly. For the next step, we will also need the direction {{< tex "\theta" >}} of {{< tex "\nabla I" >}}.
 
@@ -56,5 +56,4 @@ Hence
 
 These definitions give us an easy and quick way to find what we need.
 
-![Alt: Lion fish sobel (Image not loaded)](./canny/fish_sobel.jpeg)
-
+![Alt: Lion fish sobel (Image not loaded)](./fish_sobel.jpeg)
