@@ -31,6 +31,13 @@
 <link rel="preload" href="/fourier/custom.css" as="style">
 <link rel="stylesheet" href="/fourier/custom.css" media="all">
 
+
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/contrib/auto-render.min.js"></script>
+
+
 <link rel="alternate" type="application/rss+xml" href="https://markmizzi.github.io/fourier/algorithms/index.xml" title="Fourier" />
 <!-- Made with Geekdoc theme https://github.com/thegeeklab/hugo-geekdoc -->
 
@@ -194,7 +201,115 @@
     
 
 
-<p>Fourier implements a number of image processing algorithms.</p>
+<p>Fourier implements a number of image processing algorithms. This section of the documentation is dedicated to explaining what makes these algorithms tick, not only in the context of Fourier, but in a general image processing scenario.</p>
+<div class="gdoc-page__anchorwrap"><h2 id="convolutions">Convolutions<a data-clipboard-text="https://markmizzi.github.io/fourier/algorithms/#convolutions" class="gdoc-page__anchor gdoc-page__anchor--right clip" aria-label="Anchor Convolutions" href="#convolutions"><svg class="icon link"><use xlink:href="#link"></use></svg></a></h2></div>
+<p>Many image processing algorithms are based on the technique of convolution. In fact, Fourier&rsquo;s speed is, for the most part, limited by its implementation of convolutions.</p>
+<p>If we treat a grayscale image 
+<span class="jsonly">
+                  
+        \(I\)
+    
+</span>
+<noscript>
+                  
+        <img style="display:inline;vertical-align:middle;" src="https://latex.codecogs.com/gif.latex?\inline&space;I" title="I" />
+    
+</noscript>
+ as an 
+<span class="jsonly">
+                  
+        \(N\times M\)
+    
+</span>
+<noscript>
+                  
+        <img style="display:inline;vertical-align:middle;" src="https://latex.codecogs.com/gif.latex?\inline&space;N%5ctimes%20M" title="N\times M" />
+    
+</noscript>
+ matrix, its convolution with a matrix 
+<span class="jsonly">
+                  
+        \(K\)
+    
+</span>
+<noscript>
+                  
+        <img style="display:inline;vertical-align:middle;" src="https://latex.codecogs.com/gif.latex?\inline&space;K" title="K" />
+    
+</noscript>
+ of odd width 
+<span class="jsonly">
+                  
+        \(2 p &#43; 1\)
+    
+</span>
+<noscript>
+                  
+        <img style="display:inline;vertical-align:middle;" src="https://latex.codecogs.com/gif.latex?\inline&space;2%20p%20%2b%201" title="2 p &#43; 1" />
+    
+</noscript>
+ and odd height 
+<span class="jsonly">
+                  
+        \(2 q &#43; 1\)
+    
+</span>
+<noscript>
+                  
+        <img style="display:inline;vertical-align:middle;" src="https://latex.codecogs.com/gif.latex?\inline&space;2%20q%20%2b%201" title="2 q &#43; 1" />
+    
+</noscript>
+ is defined as an 
+<span class="jsonly">
+                  
+        \(N \times M\)
+    
+</span>
+<noscript>
+                  
+        <img style="display:inline;vertical-align:middle;" src="https://latex.codecogs.com/gif.latex?\inline&space;N%20%5ctimes%20M" title="N \times M" />
+    
+</noscript>
+ matrix 
+<span class="jsonly">
+                  
+        \(K * I\)
+    
+</span>
+<noscript>
+                  
+        <img style="display:inline;vertical-align:middle;" src="https://latex.codecogs.com/gif.latex?\inline&space;K%20%2a%20I" title="K * I" />
+    
+</noscript>
+ such that</p>
+
+<span class="jsonly">
+     
+        $$(K * I)(i, j) = \sum_{m=0}^{2p&#43;1}\sum_{n=0}^{2q&#43;1}K(m, n)I(i - m &#43; p, j &#43; n - q)$$
+    
+</span>
+<noscript>
+     
+        <div style="text-align:center;">
+            <img src="https://latex.codecogs.com/gif.latex?%28K%20%2a%20I%29%28i%2c%20j%29%20%3d%20%5csum_%7bm%3d0%7d%5e%7b2p%2b1%7d%5csum_%7bn%3d0%7d%5e%7b2q%2b1%7dK%28m%2c%20n%29I%28i%20-%20m%20%2b%20p%2c%20j%20%2b%20n%20-%20q%29" title="(K * I)(i, j) = \sum_{m=0}^{2p&#43;1}\sum_{n=0}^{2q&#43;1}K(m, n)I(i - m &#43; p, j &#43; n - q)" />
+        </div>
+    
+</noscript>
+
+<p>The convolution of a grayscale image with a matrix that has even width or even height is undefined. The matrix 
+<span class="jsonly">
+                  
+        \(K\)
+    
+</span>
+<noscript>
+                  
+        <img style="display:inline;vertical-align:middle;" src="https://latex.codecogs.com/gif.latex?\inline&space;K" title="K" />
+    
+</noscript>
+ used for convolution is called a convolution kernel, or just a kernel.</p>
+<p>The convolution of a color image with a kernel is simply the convolution of each of its components as defined for a grayscale image.</p>
+<!-- Immediately, there appears to be a problem with the definition, because there will be points in the image which  -->
 
 
     </article>
@@ -253,6 +368,11 @@
         var clipboard = new ClipboardJS('.clip');
     });
 </script>
+
+
+
+  <script>renderMathInElement(document.body);</script>
+
 
 
 </body>

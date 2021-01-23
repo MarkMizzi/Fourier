@@ -32,6 +32,9 @@
 <link rel="preload" href="/fourier/custom.css" as="style">
 <link rel="stylesheet" href="/fourier/custom.css" media="all">
 
+
+
+
 <link rel="alternate" type="application/rss+xml" href="https://markmizzi.github.io/fourier/index.xml" title="Fourier" />
 <!-- Made with Geekdoc theme https://github.com/thegeeklab/hugo-geekdoc -->
 
@@ -190,10 +193,25 @@
 
 <p>Fourier is a simple Python2 demo library which implements a number of image processing algorithms in C++.</p>
 <p>The performance of the library is not a priority, instead, the main aim of the library is to offer implementations which are approachable and enhance understanding of the algorithms. To this end, all algorithms run single threaded on a CPU, rather than being offloaded to a GPU.</p>
-<p>Here are some example images which illustrate what Fourier can do.</p>
+<p>Here are some example images which illustrate what Fourier can be used for.</p>
 <p><a href="./examples/fourier_example1.jpeg"><img src="./examples/fourier_example1.jpeg" alt="Gaussian blur example"></a></p>
+<blockquote class="gdoc-hint info">
+  <strong>Gaussian blur</strong><br>
+An image of a cathedral which has been convolved by a gaussian blur kernel. The original is shown on the left.
+</blockquote>
+
 <p><a href="./examples/fourier_example2.jpg"><img src="./examples/fourier_example2.jpg" alt="Edge detect example"></a></p>
+<blockquote class="gdoc-hint info">
+  <strong>Canny edge detection</strong><br>
+An image of a lizard. The edges in the image have been found using Canny edge detection, a multistage algorithm.
+</blockquote>
+
 <p><a href="./examples/fourier_example3.jpeg"><img src="./examples/fourier_example3.jpeg" alt="Compound example"></a></p>
+<blockquote class="gdoc-hint info">
+  <strong>Process of Canny edge detection</strong><br>
+This image illustrates part of the process of canny edge detection. The original image (top left) is first converted to grayscale and a gaussian blur is applied to it (top right). The result is then convolved with the two Sobel operators (bottom left). Finally, the image is suppressed, and then double thresholding is applied to it (bottom right).
+</blockquote>
+
 
 
     </article>
@@ -252,6 +270,9 @@
         var clipboard = new ClipboardJS('.clip');
     });
 </script>
+
+
+
 
 
 </body>

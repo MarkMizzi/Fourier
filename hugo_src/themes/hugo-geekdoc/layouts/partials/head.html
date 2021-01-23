@@ -28,7 +28,7 @@
 <link rel="stylesheet" href="{{ index .Site.Data.assets "custom.css" | relURL }}" media="all">
 
 <!-- not part of hugo-geekdoc, added for KaTeX support, taken from https://latkin.org/blog/2016/08/07/better-tex-math-typesetting-in-hugo/ -->
-{{ if .GetParam "hasMath"}}
+{{ if .Param "hasMath"}}
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/contrib/auto-render.min.js"></script>
