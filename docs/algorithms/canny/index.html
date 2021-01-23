@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Algorithms">
+<meta name="description" content="Canny Edge Detection">
 
-<title>Algorithms | Fourier</title>
+<title>Canny Edge Detection | Fourier</title>
 
 <link rel="icon" href="/fourier/favicon/favicon-32x32.png" type="image/x-icon">
 
@@ -38,7 +38,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/contrib/auto-render.min.js"></script>
 
 
-<link rel="alternate" type="application/rss+xml" href="https://markmizzi.github.io/fourier/algorithms/index.xml" title="Fourier" />
 <!-- Made with Geekdoc theme https://github.com/thegeeklab/hugo-geekdoc -->
 
 </head>
@@ -102,7 +101,7 @@
             
             
                 <span class="flex">
-                    <a href="/fourier/algorithms/" class="gdoc-nav__entry is-active">
+                    <a href="/fourier/algorithms/" class="gdoc-nav__entry ">
                         Algorithms
                     </a>
                 </span>
@@ -128,7 +127,7 @@
             
             
                 <span class="flex">
-                    <a href="/fourier/algorithms/canny/" class="gdoc-nav__entry ">
+                    <a href="/fourier/algorithms/canny/" class="gdoc-nav__entry is-active">
                         Canny Edge Detection
                     </a>
                 </span>
@@ -212,7 +211,14 @@
         
     
     
-        <a href='/fourier/'>Documentation</a> / Algorithms
+        
+        
+        
+    
+    
+        <a href='/fourier/'>Documentation</a> / <a href='/fourier/algorithms/'>Algorithms</a> / Canny Edge Detection
+    
+
     
 
     
@@ -225,8 +231,9 @@
     </span>
 </div>
 
+
     <article class="gdoc-markdown">
-        <h1>Algorithms</h1>
+        <h1>Canny Edge Detection</h1>
         
 
 
@@ -234,10 +241,19 @@
     
 
 
-<p>Fourier implements a number of image processing algorithms. This section of the documentation is dedicated to explaining what makes these algorithms tick, not only in the context of Fourier, but in a general image processing scenario.</p>
-<div class="gdoc-page__anchorwrap"><h2 id="convolutions">Convolutions<a data-clipboard-text="https://markmizzi.github.io/fourier/algorithms/#convolutions" class="gdoc-page__anchor gdoc-page__anchor--right clip" aria-label="Anchor Convolutions" href="#convolutions"><svg class="icon link"><use xlink:href="#link"></use></svg></a></h2></div>
-<p>Many image processing algorithms are based on the technique of convolution. In fact, Fourier&rsquo;s speed is, for the most part, limited by its implementation of convolutions.</p>
-<p>If we treat a grayscale image 
+<p>There are many applications which require a fast edge detection algorithm. For example, real time object detection algorithms apply edge detection on the visual data fed to them in order to simplify the object detection.</p>
+<p>Despite being developed in 1986, the Canny edge detection algorithm is still at the forefront of edge detection methods. This is because it offers a very good trade-off between accuracy and speed.</p>
+<div class="gdoc-page__anchorwrap"><h2 id="definition-of-an-edge">Definition of an edge<a data-clipboard-text="https://markmizzi.github.io/fourier/algorithms/canny/#definition-of-an-edge" class="gdoc-page__anchor gdoc-page__anchor--right clip" aria-label="Anchor Definition of an edge" href="#definition-of-an-edge"><svg class="icon link"><use xlink:href="#link"></use></svg></a></h2></div>
+<p>An edge is a curve in the image of roughly even intensity, such that in crossing the curve there is an abrupt change in intensity. We expect to find edges where one object ends and another begins, or at places where a sharp shadow is cast by an object.</p>
+<!-- mathematically define an edge -->
+<!--Several natural phenomena such as diffraction can blur edges, making -->
+<div class="gdoc-page__anchorwrap"><h2 id="the-canny-edge-detector">The Canny Edge Detector<a data-clipboard-text="https://markmizzi.github.io/fourier/algorithms/canny/#the-canny-edge-detector" class="gdoc-page__anchor gdoc-page__anchor--right clip" aria-label="Anchor The Canny Edge Detector" href="#the-canny-edge-detector"><svg class="icon link"><use xlink:href="#link"></use></svg></a></h2></div>
+<p>The Canny Edge Detector follows a 5 step process which will now be outlined. To help the discussion the following image will be passed through each step of the algorithm as implemented in Fourier.</p>
+<p><img src="./canny/fish.jpeg" alt="Alt: Lion fish (Image not loaded)"></p>
+<p>First, the image is converted to grayscale, and a gaussian blur is applied to it. The blurring is necessary because the next step uses differentiation operators, which are very sensitive to noise.</p>
+<p>The Gaussian blur removes a large amount of noise from the image, but also defocuses the edges. The blur parameters must hence be adjusted for optimal performance.</p>
+<p><img src="./canny/fish_gray.jpeg" alt="Alt: Gray lion fish (Image not loaded)"></p>
+<p>We are interested in places in the image 
 <span class="jsonly">
                   
         \(I\)
@@ -248,389 +264,133 @@
         <img style="display:inline;vertical-align:middle;" src="https://latex.codecogs.com/gif.latex?\inline&space;I" title="I" />
     
 </noscript>
- as an 
+ where 
 <span class="jsonly">
                   
-        \(N\times M\)
+        \(|\nabla I|\)
     
 </span>
 <noscript>
                   
-        <img style="display:inline;vertical-align:middle;" src="https://latex.codecogs.com/gif.latex?\inline&space;N%5ctimes%20M" title="N\times M" />
+        <img style="display:inline;vertical-align:middle;" src="https://latex.codecogs.com/gif.latex?\inline&space;%7c%5cnabla%20I%7c" title="|\nabla I|" />
     
 </noscript>
- matrix, its convolution with a matrix 
+ is large, as this marks pixels where the intensity changes abruptly. For the next step, we will also need the direction 
 <span class="jsonly">
                   
-        \(K\)
+        \(\theta\)
     
 </span>
 <noscript>
                   
-        <img style="display:inline;vertical-align:middle;" src="https://latex.codecogs.com/gif.latex?\inline&space;K" title="K" />
+        <img style="display:inline;vertical-align:middle;" src="https://latex.codecogs.com/gif.latex?\inline&space;%5ctheta" title="\theta" />
     
 </noscript>
- which is smaller than 
+ of 
 <span class="jsonly">
                   
-        \(I\)
+        \(\nabla I\)
     
 </span>
 <noscript>
                   
-        <img style="display:inline;vertical-align:middle;" src="https://latex.codecogs.com/gif.latex?\inline&space;I" title="I" />
+        <img style="display:inline;vertical-align:middle;" src="https://latex.codecogs.com/gif.latex?\inline&space;%5cnabla%20I" title="\nabla I" />
     
 </noscript>
- and has odd width 
-<span class="jsonly">
-                  
-        \(2 p &#43; 1\)
-    
-</span>
-<noscript>
-                  
-        <img style="display:inline;vertical-align:middle;" src="https://latex.codecogs.com/gif.latex?\inline&space;2%20p%20%2b%201" title="2 p &#43; 1" />
-    
-</noscript>
- and odd height 
-<span class="jsonly">
-                  
-        \(2 q &#43; 1\)
-    
-</span>
-<noscript>
-                  
-        <img style="display:inline;vertical-align:middle;" src="https://latex.codecogs.com/gif.latex?\inline&space;2%20q%20%2b%201" title="2 q &#43; 1" />
-    
-</noscript>
- is defined as an 
-<span class="jsonly">
-                  
-        \(N \times M\)
-    
-</span>
-<noscript>
-                  
-        <img style="display:inline;vertical-align:middle;" src="https://latex.codecogs.com/gif.latex?\inline&space;N%20%5ctimes%20M" title="N \times M" />
-    
-</noscript>
- matrix 
-<span class="jsonly">
-                  
-        \(K * I\)
-    
-</span>
-<noscript>
-                  
-        <img style="display:inline;vertical-align:middle;" src="https://latex.codecogs.com/gif.latex?\inline&space;K%20%2a%20I" title="K * I" />
-    
-</noscript>
- such that</p>
+.</p>
+<p>The Sobel kernels, defined as</p>
 
 <span class="jsonly">
      
-        $$(K * I)(i, j) = \sum_{n=0}^{2p&#43;1}\sum_{m=0}^{2q&#43;1}K(n, m)I(i - n &#43; p, j - m &#43; q)$$
+        $$S_x := 
+                    \begin{pmatrix}
+                        1 &amp; 0 &amp; -1 \\
+                        2 &amp; 0 &amp; -2 \\
+                        1 &amp; 0 &amp; -1
+                    \end{pmatrix}; 
+                    \qquad
+                S_y := 
+                    \begin{pmatrix}
+                        1 &amp; 2 &amp; 1 \\
+                        0 &amp; 0 &amp; 0 \\
+                        -1 &amp; -2 &amp; -1
+                    \end{pmatrix}$$
     
 </span>
 <noscript>
      
         <div style="text-align:center;">
-            <img src="https://latex.codecogs.com/gif.latex?%28K%20%2a%20I%29%28i%2c%20j%29%20%3d%20%5csum_%7bn%3d0%7d%5e%7b2p%2b1%7d%5csum_%7bm%3d0%7d%5e%7b2q%2b1%7dK%28n%2c%20m%29I%28i%20-%20n%20%2b%20p%2c%20j%20-%20m%20%2b%20q%29" title="(K * I)(i, j) = \sum_{n=0}^{2p&#43;1}\sum_{m=0}^{2q&#43;1}K(n, m)I(i - n &#43; p, j - m &#43; q)" />
+            <img src="https://latex.codecogs.com/gif.latex?S_x%20%3a%3d%20%0a%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5cbegin%7bpmatrix%7d%0a%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%201%20%26%200%20%26%20-1%20%5c%5c%0a%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%202%20%26%200%20%26%20-2%20%5c%5c%0a%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%201%20%26%200%20%26%20-1%0a%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5cend%7bpmatrix%7d%3b%20%0a%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5cqquad%0a%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20S_y%20%3a%3d%20%0a%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5cbegin%7bpmatrix%7d%0a%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%201%20%26%202%20%26%201%20%5c%5c%0a%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%200%20%26%200%20%26%200%20%5c%5c%0a%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20-1%20%26%20-2%20%26%20-1%0a%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5cend%7bpmatrix%7d" title="S_x := 
+                    \begin{pmatrix}
+                        1 &amp; 0 &amp; -1 \\
+                        2 &amp; 0 &amp; -2 \\
+                        1 &amp; 0 &amp; -1
+                    \end{pmatrix}; 
+                    \qquad
+                S_y := 
+                    \begin{pmatrix}
+                        1 &amp; 2 &amp; 1 \\
+                        0 &amp; 0 &amp; 0 \\
+                        -1 &amp; -2 &amp; -1
+                    \end{pmatrix}" />
         </div>
     
 </noscript>
 
-<p>The matrix 
+<p>are such that 
 <span class="jsonly">
                   
-        \(K\)
+        \(S_x * I \approx \frac{\partial I}{\partial x}\)
     
 </span>
 <noscript>
                   
-        <img style="display:inline;vertical-align:middle;" src="https://latex.codecogs.com/gif.latex?\inline&space;K" title="K" />
-    
-</noscript>
- used for convolution is called a convolution kernel, or just a kernel. Convolutions with kernels of even width or height, or a size larger than the image are left undefined for the sake of simplicity.</p>
-<p>The convolution of a color image with a kernel is simply the convolution of each of its components as defined for a grayscale image.</p>
-<p>Immediately, there appears to be a problem with the definition, because unless the kernel is 
-<span class="jsonly">
-                  
-        \(1\times 1\)
-    
-</span>
-<noscript>
-                  
-        <img style="display:inline;vertical-align:middle;" src="https://latex.codecogs.com/gif.latex?\inline&space;1%5ctimes%201" title="1\times 1" />
-    
-</noscript>
-, there will be points in the image 
-<span class="jsonly">
-                  
-        \(I(i, j)\)
-    
-</span>
-<noscript>
-                  
-        <img style="display:inline;vertical-align:middle;" src="https://latex.codecogs.com/gif.latex?\inline&space;I%28i%2c%20j%29" title="I(i, j)" />
-    
-</noscript>
- such that 
-<span class="jsonly">
-                  
-        \(i - n &#43; p &lt; 0\)
-    
-</span>
-<noscript>
-                  
-        <img style="display:inline;vertical-align:middle;" src="https://latex.codecogs.com/gif.latex?\inline&space;i%20-%20n%20%2b%20p%20%3c%200" title="i - n &#43; p &lt; 0" />
-    
-</noscript>
-, 
-<span class="jsonly">
-                  
-        \(i - n &#43; p \geq N\)
-    
-</span>
-<noscript>
-                  
-        <img style="display:inline;vertical-align:middle;" src="https://latex.codecogs.com/gif.latex?\inline&space;i%20-%20n%20%2b%20p%20%5cgeq%20N" title="i - n &#43; p \geq N" />
-    
-</noscript>
-, 
-<span class="jsonly">
-                  
-        \(j - m &#43; q &lt; 0\)
-    
-</span>
-<noscript>
-                  
-        <img style="display:inline;vertical-align:middle;" src="https://latex.codecogs.com/gif.latex?\inline&space;j%20-%20m%20%2b%20q%20%3c%200" title="j - m &#43; q &lt; 0" />
-    
-</noscript>
- or 
-<span class="jsonly">
-                  
-        \(j - m &#43; p \geq M\)
-    
-</span>
-<noscript>
-                  
-        <img style="display:inline;vertical-align:middle;" src="https://latex.codecogs.com/gif.latex?\inline&space;j%20-%20m%20%2b%20p%20%5cgeq%20M" title="j - m &#43; p \geq M" />
-    
-</noscript>
-.</p>
-<p>There is more than one way to handle this issue. The simplest solution is to not compute the result of the convolution for pixels which are out of bound, and copy them over untouched to the convolved image. This is the approach taken by Fourier at the moment.</p>
-<p>For small images or special kernels the above solution does not produce a satisfactory result. For Canny edge detection, for example, white lines usually appear around the image, because blurring the image at the start produces a sharp intensity gradient at the border of the image.</p>
-<p>An alternative is to virtually &ldquo;extend&rdquo; the image to a new image 
-<span class="jsonly">
-                  
-        \(I&#39;\)
-    
-</span>
-<noscript>
-                  
-        <img style="display:inline;vertical-align:middle;" src="https://latex.codecogs.com/gif.latex?\inline&space;I%27" title="I&#39;" />
-    
-</noscript>
- of size 
-<span class="jsonly">
-                  
-        \((N &#43; 2p) \times (M &#43; 2q)\)
-    
-</span>
-<noscript>
-                  
-        <img style="display:inline;vertical-align:middle;" src="https://latex.codecogs.com/gif.latex?\inline&space;%28N%20%2b%202p%29%20%5ctimes%20%28M%20%2b%202q%29" title="(N &#43; 2p) \times (M &#43; 2q)" />
-    
-</noscript>
-, such that the indices of the image fall in the range 
-<span class="jsonly">
-                  
-        \(-p &lt; i &lt; N &#43; p\)
-    
-</span>
-<noscript>
-                  
-        <img style="display:inline;vertical-align:middle;" src="https://latex.codecogs.com/gif.latex?\inline&space;-p%20%3c%20i%20%3c%20N%20%2b%20p" title="-p &lt; i &lt; N &#43; p" />
+        <img style="display:inline;vertical-align:middle;" src="https://latex.codecogs.com/gif.latex?\inline&space;S_x%20%2a%20I%20%5capprox%20%5cfrac%7b%5cpartial%20I%7d%7b%5cpartial%20x%7d" title="S_x * I \approx \frac{\partial I}{\partial x}" />
     
 </noscript>
  and 
 <span class="jsonly">
                   
-        \(-q &lt; j &lt; M &#43; q\)
+        \(S_y * I \approx \frac{\partial I}{\partial y}\)
     
 </span>
 <noscript>
                   
-        <img style="display:inline;vertical-align:middle;" src="https://latex.codecogs.com/gif.latex?\inline&space;-q%20%3c%20j%20%3c%20M%20%2b%20q" title="-q &lt; j &lt; M &#43; q" />
+        <img style="display:inline;vertical-align:middle;" src="https://latex.codecogs.com/gif.latex?\inline&space;S_y%20%2a%20I%20%5capprox%20%5cfrac%7b%5cpartial%20I%7d%7b%5cpartial%20y%7d" title="S_y * I \approx \frac{\partial I}{\partial y}" />
     
 </noscript>
-, and which is defined by</p>
-
+</p>
+<p>Hence</p>
+<p>
 <span class="jsonly">
      
-        $$I&#39;(i, j) = I(i&#39;, j&#39;); \qquad
-                    i&#39; = 
-                    \begin{cases}
-                        i &amp; 0 \leq i &lt; N \\
-                        0 &amp; i &lt; 0 \\
-                        N - 1 &amp; i \geq N
-                    \end{cases}
-                    \qquad
-                    j&#39; = 
-                    \begin{cases}
-                        j &amp; 0 \leq j &lt; M \\
-                        0 &amp; j &lt; 0 \\
-                        M - 1 &amp; j \geq M
-                    \end{cases}$$
+        $$|\nabla I| = \sqrt{(S_x * I)^2 &#43; (S_y * I)^2}$$
     
 </span>
 <noscript>
      
         <div style="text-align:center;">
-            <img src="https://latex.codecogs.com/gif.latex?I%27%28i%2c%20j%29%20%3d%20I%28i%27%2c%20j%27%29%3b%20%5cqquad%0a%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20i%27%20%3d%20%0a%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5cbegin%7bcases%7d%0a%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20i%20%26%200%20%5cleq%20i%20%3c%20N%20%5c%5c%0a%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%200%20%26%20i%20%3c%200%20%5c%5c%0a%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20N%20-%201%20%26%20i%20%5cgeq%20N%0a%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5cend%7bcases%7d%0a%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5cqquad%0a%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20j%27%20%3d%20%0a%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5cbegin%7bcases%7d%0a%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20j%20%26%200%20%5cleq%20j%20%3c%20M%20%5c%5c%0a%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%200%20%26%20j%20%3c%200%20%5c%5c%0a%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20M%20-%201%20%26%20j%20%5cgeq%20M%0a%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5cend%7bcases%7d" title="I&#39;(i, j) = I(i&#39;, j&#39;); \qquad
-                    i&#39; = 
-                    \begin{cases}
-                        i &amp; 0 \leq i &lt; N \\
-                        0 &amp; i &lt; 0 \\
-                        N - 1 &amp; i \geq N
-                    \end{cases}
-                    \qquad
-                    j&#39; = 
-                    \begin{cases}
-                        j &amp; 0 \leq j &lt; M \\
-                        0 &amp; j &lt; 0 \\
-                        M - 1 &amp; j \geq M
-                    \end{cases}" />
+            <img src="https://latex.codecogs.com/gif.latex?%7c%5cnabla%20I%7c%20%3d%20%5csqrt%7b%28S_x%20%2a%20I%29%5e2%20%2b%20%28S_y%20%2a%20I%29%5e2%7d" title="|\nabla I| = \sqrt{(S_x * I)^2 &#43; (S_y * I)^2}" />
         </div>
     
 </noscript>
 
-<p>It should be clear that 
-<span class="jsonly">
-                  
-        \(I&#39;\)
-    
-</span>
-<noscript>
-                  
-        <img style="display:inline;vertical-align:middle;" src="https://latex.codecogs.com/gif.latex?\inline&space;I%27" title="I&#39;" />
-    
-</noscript>
- is well defined in terms of 
-<span class="jsonly">
-                  
-        \(I\)
-    
-</span>
-<noscript>
-                  
-        <img style="display:inline;vertical-align:middle;" src="https://latex.codecogs.com/gif.latex?\inline&space;I" title="I" />
-    
-</noscript>
-, and one can then redefine the convolution as</p>
 
 <span class="jsonly">
      
-        $$(K * I)(i, j) = \sum_{n=0}^{2p&#43;1}\sum_{m=0}^{2q&#43;1}K(n, m)I&#39;(i - n &#43; p, j - m &#43; q)$$
+        $$\theta = \arctan \bigg(\frac{S_y * I}{S_x * I}\bigg)$$
     
 </span>
 <noscript>
      
         <div style="text-align:center;">
-            <img src="https://latex.codecogs.com/gif.latex?%28K%20%2a%20I%29%28i%2c%20j%29%20%3d%20%5csum_%7bn%3d0%7d%5e%7b2p%2b1%7d%5csum_%7bm%3d0%7d%5e%7b2q%2b1%7dK%28n%2c%20m%29I%27%28i%20-%20n%20%2b%20p%2c%20j%20-%20m%20%2b%20q%29" title="(K * I)(i, j) = \sum_{n=0}^{2p&#43;1}\sum_{m=0}^{2q&#43;1}K(n, m)I&#39;(i - n &#43; p, j - m &#43; q)" />
-        </div>
-    
-</noscript>
-
-<p>This new definition works for any 
-<span class="jsonly">
-                  
-        \(0 \leq i &lt; N\)
-    
-</span>
-<noscript>
-                  
-        <img style="display:inline;vertical-align:middle;" src="https://latex.codecogs.com/gif.latex?\inline&space;0%20%5cleq%20i%20%3c%20N" title="0 \leq i &lt; N" />
-    
-</noscript>
- and 
-<span class="jsonly">
-                  
-        \(0 \leq j &lt; M\)
-    
-</span>
-<noscript>
-                  
-        <img style="display:inline;vertical-align:middle;" src="https://latex.codecogs.com/gif.latex?\inline&space;0%20%5cleq%20j%20%3c%20M" title="0 \leq j &lt; M" />
-    
-</noscript>
-.</p>
-<p>In fact most strategies which handle the issue of convolution at the border of the image are based on this tactic of finding a new image 
-<span class="jsonly">
-                  
-        \(I&#39;\)
-    
-</span>
-<noscript>
-                  
-        <img style="display:inline;vertical-align:middle;" src="https://latex.codecogs.com/gif.latex?\inline&space;I%27" title="I&#39;" />
-    
-</noscript>
- which is well defined in terms of 
-<span class="jsonly">
-                  
-        \(I\)
-    
-</span>
-<noscript>
-                  
-        <img style="display:inline;vertical-align:middle;" src="https://latex.codecogs.com/gif.latex?\inline&space;I" title="I" />
-    
-</noscript>
-, but which is larger to account for the convolution.</p>
-<p>Another such strategy is to &ldquo;mirror&rdquo; the image:
-
-<span class="jsonly">
-     
-        $$I&#39;(i, j) = I(i&#39;, j&#39;); \qquad
-                    i&#39; = 
-                    \begin{cases}
-                        i &amp; 0 \leq i &lt; N \\
-                        -i &amp; i &lt; 0 \\
-                        2N - i &amp; i \geq N
-                    \end{cases}
-                    \qquad
-                    j&#39; = 
-                    \begin{cases}
-                        j &amp; 0 \leq j &lt; M \\
-                        -j &amp; j &lt; 0 \\
-                        2M - j &amp; j \geq M
-                    \end{cases}$$
-    
-</span>
-<noscript>
-     
-        <div style="text-align:center;">
-            <img src="https://latex.codecogs.com/gif.latex?I%27%28i%2c%20j%29%20%3d%20I%28i%27%2c%20j%27%29%3b%20%5cqquad%0a%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20i%27%20%3d%20%0a%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5cbegin%7bcases%7d%0a%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20i%20%26%200%20%5cleq%20i%20%3c%20N%20%5c%5c%0a%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20-i%20%26%20i%20%3c%200%20%5c%5c%0a%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%202N%20-%20i%20%26%20i%20%5cgeq%20N%0a%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5cend%7bcases%7d%0a%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5cqquad%0a%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20j%27%20%3d%20%0a%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5cbegin%7bcases%7d%0a%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20j%20%26%200%20%5cleq%20j%20%3c%20M%20%5c%5c%0a%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20-j%20%26%20j%20%3c%200%20%5c%5c%0a%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%202M%20-%20j%20%26%20j%20%5cgeq%20M%0a%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5cend%7bcases%7d" title="I&#39;(i, j) = I(i&#39;, j&#39;); \qquad
-                    i&#39; = 
-                    \begin{cases}
-                        i &amp; 0 \leq i &lt; N \\
-                        -i &amp; i &lt; 0 \\
-                        2N - i &amp; i \geq N
-                    \end{cases}
-                    \qquad
-                    j&#39; = 
-                    \begin{cases}
-                        j &amp; 0 \leq j &lt; M \\
-                        -j &amp; j &lt; 0 \\
-                        2M - j &amp; j \geq M
-                    \end{cases}" />
+            <img src="https://latex.codecogs.com/gif.latex?%5ctheta%20%3d%20%5carctan%20%5cbigg%28%5cfrac%7bS_y%20%2a%20I%7d%7bS_x%20%2a%20I%7d%5cbigg%29" title="\theta = \arctan \bigg(\frac{S_y * I}{S_x * I}\bigg)" />
         </div>
     
 </noscript>
 </p>
+<p>These definitions give us an easy and quick way to find what we need.</p>
+<p><img src="./canny/fish_sobel.jpeg" alt="Alt: Lion fish sobel (Image not loaded)"></p>
 
 
     </article>

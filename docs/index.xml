@@ -10,5 +10,16 @@
 	<atom:link href="https://markmizzi.github.io/fourier/index.xml" rel="self" type="application/rss+xml" />
     
     
+    <item>
+      <title>Canny Edge Detection</title>
+      <link>https://markmizzi.github.io/fourier/algorithms/canny/</link>
+      <pubDate>Sat, 23 Jan 2021 16:15:01 +0100</pubDate>
+      
+      <guid>https://markmizzi.github.io/fourier/algorithms/canny/</guid>
+      <description>There are many applications which require a fast edge detection algorithm. For example, real time object detection algorithms apply edge detection on the visual data fed to them in order to simplify the object detection.
+Despite being developed in 1986, the Canny edge detection algorithm is still at the forefront of edge detection methods. This is because it offers a very good trade-off between accuracy and speed.
+Definition of an edge An edge is a curve in the image of roughly even intensity, such that in crossing the curve there is an abrupt change in intensity.</description>
+    </item>
+    
   </channel>
 </rss>
